@@ -6,7 +6,9 @@ const ProductSchema = new mongoose.Schema({
   price: Number,
   image: String,
   seller: { type: mongoose.Schema.Types.ObjectId, ref: "Seller" }
-});
+},
+{ collection: "products" }
+);
 
 export default mongoose.models.Product || mongoose.model("Product", ProductSchema);
 

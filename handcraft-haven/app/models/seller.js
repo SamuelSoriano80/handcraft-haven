@@ -6,6 +6,8 @@ const SellerSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   password: String,
   avatar: String
-});
+},
+{ collection: "sellers" }
+);
 
 export default mongoose.models.Seller || mongoose.model("Seller", SellerSchema);
