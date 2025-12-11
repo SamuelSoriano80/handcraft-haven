@@ -16,6 +16,10 @@ export default function LoginPage() {
         </nav>
       </header>
 
+      <Suspense fallback={<p style={{ textAlign: "center", padding: "2rem" }}>Loading...</p>}>
+          <LoginForm />
+        </Suspense>
+
       <footer className={styles.footer}>
         <p>© {new Date().getFullYear()} Handcraft Haven. All rights reserved.</p>
       </footer>
