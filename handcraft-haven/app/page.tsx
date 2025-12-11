@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 async function getRandomProducts(limit: number = 3) {
   try {
-    const res = await fetch("http://localhost:3000/api/products", { cache: "no-store" });
+    const res = await fetch("/api/products", { cache: "no-store" });
     if (!res.ok) return [];
     const products = await res.json();
     return products.sort(() => Math.random() - 0.5).slice(0, limit);
@@ -20,7 +20,7 @@ async function getRandomProducts(limit: number = 3) {
 
 async function getRandomSellers(limit: number = 2) {
   try {
-    const res = await fetch("http://localhost:3000/api/sellers", { cache: "no-store" });
+    const res = await fetch("/api/sellers", { cache: "no-store" });
     if (!res.ok) return [];
     const sellers = await res.json();
     return sellers.sort(() => Math.random() - 0.5).slice(0, limit);
