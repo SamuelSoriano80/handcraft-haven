@@ -16,15 +16,6 @@ export default function LoginPage() {
         </nav>
       </header>
 
-      <main className={styles.container}>
-        <h1 className={styles.sectionTitle}>Log In</h1>
-        <p className={styles.subtitle}>Log in to your seller account</p>
-
-        <Suspense fallback={<p style={{ textAlign: "center", padding: "2rem" }}>Loading...</p>}>
-          <LoginForm />
-        </Suspense>
-      </main>
-
       <footer className={styles.footer}>
         <p>© {new Date().getFullYear()} Handcraft Haven. All rights reserved.</p>
       </footer>
