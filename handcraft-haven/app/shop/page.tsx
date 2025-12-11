@@ -10,6 +10,9 @@ export default function ShopPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<any[]>([]);
+  const [sellers, setSellers] = useState<any[]>([]);
+  const [priceRange, setPriceRange] = useState<string>("All");
+  const [sellerFilter, setSellerFilter] = useState<string>("All");
 
   useEffect(() => {
     fetch("/api/products")
@@ -18,6 +21,11 @@ export default function ShopPage() {
         setProducts(data);
         setFiltered(data);
       });
+    // fetch sellers for seller filter
+    fetch("/api/sellers")
+      .then(res => res.json())
+      .then(data => setSellers(Array.isArray(data) ? data : []))
+      .catch(() => setSellers([]));
   }, []);
 
   useEffect(() => {
@@ -26,10 +34,38 @@ export default function ShopPage() {
       products.filter(p => {
         const title = (p.title || p.name || "").toLowerCase();
         const desc = (p.description || "").toLowerCase();
-        return title.includes(lower) || desc.includes(lower);
+
+        // search match
+        if (!(title.includes(lower) || desc.includes(lower))) return false;
+
+        // seller filter
+        if (sellerFilter && sellerFilter !== "All") {
+          if (!p.seller || String(p.seller) !== String(sellerFilter)) return false;
+        }
+
+        // price filter
+        const price = Number(p.price || 0);
+        switch (priceRange) {
+          case "Under $25":
+            if (!(price < 25)) return false;
+            break;
+          case "$25 - $50":
+            if (!(price >= 25 && price <= 50)) return false;
+            break;
+          case "$50 - $100":
+            if (!(price > 50 && price <= 100)) return false;
+            break;
+          case "$100+":
+            if (!(price > 100)) return false;
+            break;
+          default:
+            break;
+        }
+
+        return true;
       })
     );
-  }, [search, products]);
+  }, [search, products, priceRange, sellerFilter]);
 
   return (
     <>
@@ -60,17 +96,28 @@ export default function ShopPage() {
             <h3>Filters</h3>
 
             <label className={styles.filterLabel}>Price Range</label>
-            <select className={styles.filterSelect}>
-              <option>All</option>
-              <option>Under $25</option>
-              <option>$25 - $50</option>
-              <option>$50 - $100</option>
-              <option>$100+</option>
+            <select
+              className={styles.filterSelect}
+              value={priceRange}
+              onChange={e => setPriceRange(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="Under $25">Under $25</option>
+              <option value="$25 - $50">$25 - $50</option>
+              <option value="$50 - $100">$50 - $100</option>
+              <option value="$100+">$100+</option>
             </select>
 
             <label className={styles.filterLabel}>Seller</label>
-            <select className={styles.filterSelect}>
-              <option>All Sellers</option>
+            <select
+              className={styles.filterSelect}
+              value={sellerFilter}
+              onChange={e => setSellerFilter(e.target.value)}
+            >
+              <option value="All">All Sellers</option>
+              {sellers.map(s => (
+                <option key={s._id} value={s._id}>{s.name}</option>
+              ))}
             </select>
           </aside>
 
