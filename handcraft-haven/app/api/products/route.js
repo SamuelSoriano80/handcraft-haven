@@ -3,9 +3,14 @@ import connectDB from "../../config/db";
 import Product from "../../models/product";
 
 export async function GET() {
-  await connectDB();
-  const products = await Product.find().populate("seller");
-  return NextResponse.json(products);
+  try {
+    await connectDB();
+    const products = await Product.find();
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error("GET /api/products error:", error);
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  }
 }
 
 export async function POST(req) {
