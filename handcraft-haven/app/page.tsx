@@ -1,38 +1,47 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./landing.module.css";
 import LoginButtonClient from "./components/LoginButtonClient";
 
-export const dynamic = 'force-dynamic';
+export default function LandingPage() {
+  const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
+  const [featuredSellers, setFeaturedSellers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-async function getRandomProducts(limit: number = 3) {
-  try {
-    const res = await fetch("/api/products", { cache: "no-store" });
-    if (!res.ok) return [];
-    const products = await res.json();
-    return products.sort(() => Math.random() - 0.5).slice(0, limit);
-  } catch (error) {
-    console.error("Failed to fetch products:", error);
-    return [];
-  }
-}
+  useEffect(() => {
+    let mounted = true;
 
-async function getRandomSellers(limit: number = 2) {
-  try {
-    const res = await fetch("/api/sellers", { cache: "no-store" });
-    if (!res.ok) return [];
-    const sellers = await res.json();
-    return sellers.sort(() => Math.random() - 0.5).slice(0, limit);
-  } catch (error) {
-    console.error("Failed to fetch sellers:", error);
-    return [];
-  }
-}
+    async function fetchData() {
+      try {
+        const [pRes, sRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/sellers")
+        ]);
 
-export default async function LandingPage() {
-  const featuredProducts = await getRandomProducts(3);
-  const featuredSellers = await getRandomSellers(2);
+        const products = pRes.ok ? await pRes.json() : [];
+        const sellers = sRes.ok ? await sRes.json() : [];
+
+        if (!mounted) return;
+
+        setFeaturedProducts(Array.isArray(products) ? [...products].sort(() => Math.random() - 0.5).slice(0, 3) : []);
+        setFeaturedSellers(Array.isArray(sellers) ? [...sellers].sort(() => Math.random() - 0.5).slice(0, 2) : []);
+      } catch (err) {
+        console.error("Landing fetch error:", err);
+        if (mounted) {
+          setFeaturedProducts([]);
+          setFeaturedSellers([]);
+        }
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    fetchData();
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <main className={styles.container}>
@@ -66,7 +75,9 @@ export default async function LandingPage() {
   <h2 className={styles.sectionTitle}>Featured Products</h2>
 
   <div className={styles.productsGrid}>
-    {featuredProducts.length > 0 ? (
+    {loading ? (
+      <p>Loading products…</p>
+    ) : featuredProducts.length > 0 ? (
       featuredProducts.map((product: any) => (
         <Link href={`/product/${product._id}`} key={product._id} className={styles.productCard}>
           <Image
@@ -119,7 +130,9 @@ export default async function LandingPage() {
   <h2 className={styles.sectionTitle}>Featured Sellers</h2>
 
   <div className={styles.sellersGrid}>
-    {featuredSellers.length > 0 ? (
+    {loading ? (
+      <p>Loading sellers…</p>
+    ) : featuredSellers.length > 0 ? (
       featuredSellers.map((seller: any) => (
         <Link href={`/sellers/${seller._id}`} key={seller._id} className={styles.sellerCard}>
           <Image
