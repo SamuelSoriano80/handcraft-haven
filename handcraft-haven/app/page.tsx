@@ -4,6 +4,8 @@ import Image from "next/image";
 import styles from "./landing.module.css";
 import LoginButtonClient from "./components/LoginButtonClient";
 
+export const dynamic = 'force-dynamic';
+
 async function getRandomProducts(limit: number = 3) {
   try {
     const res = await fetch("http://localhost:3000/api/products", { cache: "no-store" });
