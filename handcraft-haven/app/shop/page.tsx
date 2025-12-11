@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import LoginButton from "../components/LoginButton";
 import styles from "../landing.module.css";
 
 export default function ShopPage() {
@@ -19,7 +20,6 @@ export default function ShopPage() {
       });
   }, []);
 
-  // Filter by search
   useEffect(() => {
     const lower = search.toLowerCase();
     setFiltered(
@@ -33,14 +33,13 @@ export default function ShopPage() {
 
   return (
     <>
-      {/* Navigation */}
       <header className={styles.header}>
-        <div className={styles.logo}>Handcraft Haven</div>
+        <Link href="/" className={styles.logo}>Handcraft Haven</Link>
         <nav className={styles.nav} aria-label="Main Navigation">
           <Link href="/shop" className={styles.navLink}>Shop</Link>
           <Link href="/sellers" className={styles.navLink}>Sellers</Link>
           <Link href="/dashboard" className={styles.navLink}>Dashboard</Link>
-          <button className={styles.loginButton}>Log In</button>
+          <LoginButton />
         </nav>
       </header>
 
@@ -57,7 +56,6 @@ export default function ShopPage() {
         />
 
         <div className={styles.shopLayout}>
-          {/* Filters */}
           <aside className={styles.filters}>
             <h3>Filters</h3>
 
@@ -76,7 +74,6 @@ export default function ShopPage() {
             </select>
           </aside>
 
-          {/* Product Grid */}
           <div className={styles.productsGrid}>
             {filtered.map(product => (
               <Link
@@ -99,7 +96,6 @@ export default function ShopPage() {
         </div>
       </main>
 
-      {/* Footer */}
       <footer className={styles.footer}>
         <p>© {new Date().getFullYear()} Handcraft Haven. All rights reserved.</p>
       </footer>

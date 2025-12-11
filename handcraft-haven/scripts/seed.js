@@ -10,11 +10,9 @@ async function seed() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
 
-    // Clear previous data
     await Seller.deleteMany();
     await Product.deleteMany();
 
-    // Create sellers
     const sellers = await Seller.insertMany([
       {
         name: "Ana López",
@@ -34,7 +32,6 @@ async function seed() {
 
     console.log("Sellers seeded");
 
-    // Create products
     const products = await Product.insertMany([
       {
         name: "Handmade Pottery Vase",

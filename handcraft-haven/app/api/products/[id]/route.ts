@@ -10,7 +10,6 @@ async function connectDB() {
   }
 }
 
-/* GET single product */
 export async function GET(req: Request, context: any) {
   const params = await context.params;
   const id = String(params.id).trim();
@@ -29,7 +28,6 @@ export async function GET(req: Request, context: any) {
   return NextResponse.json(product);
 }
 
-/* UPDATE product */
 export async function PUT(req: Request, context: any) {
   const params = await context.params;
   const id = String(params.id).trim();
@@ -54,7 +52,6 @@ export async function PUT(req: Request, context: any) {
   return NextResponse.json(updated);
 }
 
-/* DELETE product */
 export async function DELETE(req: Request, context: any) {
   const params = await context.params;
   const id = String(params.id).trim();
